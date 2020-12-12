@@ -11,6 +11,10 @@ float zt = 0.4;
 float fs = 0.04;
 float yc = 0.02;
 float pstop = 0.046;
+float playerTranslateX = 0.0; float playerTranslateZ = 0.0;
+
+
+
 class Vector3f {
 public:
 	float x, y, z;
@@ -99,7 +103,25 @@ public:
 };
 
 Camera camera;
+//TODO col detection adjust
+// bool doesCol(float obj1X, float obj1Z, float obj2X, float obj2Z){//, float widthX, float widthZ) {
+// 	//all objcs width are 40 for simplicity
+// 	return (((obj1X + 40 > obj2X && obj1X < obj2X) ||
+// 		(obj1X < obj2X + 40 && obj1X > obj2X)) &&
+// 		((obj1Z + 40 > obj2Z && obj1Z < obj2Z) ||
+// 			(obj1Z < obj2Z + 40 && obj1Z > obj2Z)));
+// 	//if () return true;
 
+// }
+// void colDetection() {
+// 	if (doesCol(playrX, playrY, width - 60, height - 60))
+// 		goalR = false;
+// 	for (int i = 0; i < coinNumber; i++)
+// 		if (doesCol(playrX, playrY, coinX[i], coinY[i])) { playerCoins += 1;  coinX[i] = -100; coinY[i] = -100; }
+// 	for (int i = 0; i < 2; i++)
+// 		if (doesCol(playrX, playrY, powerX[i], powerY[i])) { playerPower[i] = true;  powerX[i] = -100; powerY[i] = -100; }
+
+// }
 void drawWall(double thickness) {
 	glPushMatrix();
 	glTranslated(0.4, 0.5 * thickness, 0.4);
@@ -250,6 +272,15 @@ void drawJack() {
 	drawJackPart();
 	glPopMatrix();
 }
+void drawJackHuman() {
+	glPushMatrix();
+	//drawJackPart();
+	glScaled(0.1,0.1,0.1);
+	glTranslated(0, 0.1, 0);
+	glRotated(90.0, 1, 0, 0);
+	drawJackPart();
+	glPopMatrix();
+}
 void drawChair(double topWid, double topThick, double legThick, double legLen) {
 	glPushMatrix();
 	glTranslated(0, legLen, 0);
@@ -365,6 +396,11 @@ void Display() {
 	drawChair(0.07, 0.0001, 0.005, 0.07);
 	glPopMatrix();
 
+	glPushMatrix();
+	glTranslated(0.6 + playerTranslateX, yc, 0.15 + playerTranslateZ);
+	glColor3f(0.3, 0, 1);
+	drawJackHuman();
+	glPopMatrix();
 
 	glPushMatrix();
 	glTranslated(0.5, yc, 0.15);
@@ -390,7 +426,18 @@ void Keyboard(unsigned char key, int x, int y) {
 		y = y - 0.2;
 
 	switch (key) {
-
+	case 'i':
+		playerTranslateZ += -0.07;
+		break;
+	case 'j':
+		playerTranslateX += -0.07;
+		break;
+	case 'k':
+		playerTranslateZ += 0.07;
+		break;
+	case 'l':
+		playerTranslateX += 0.07;
+		break;
 	case 'w':
 		camera.moveY(d);
 		break;
@@ -443,7 +490,7 @@ void main(int argc, char** argv) {
 	glutInitWindowSize(640, 480);
 	glutInitWindowPosition(50, 50);
 
-	glutCreateWindow("Lab 5");
+	glutCreateWindow("assignment 2");
 	glutDisplayFunc(Display);
 	glutKeyboardFunc(Keyboard);
 	glutSpecialFunc(Special);
